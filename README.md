@@ -10,18 +10,25 @@ can be browsed at [http://localhost:8080/](http://localhost:8080/).
 
 Git is a version control system used for files.
 [Install git](http://git-scm.com/download).
+To authenticate yourself without password, 
+use [asymmetric crypto](https://help.github.com/articles/generating-ssh-keys).
 
-One group member should fork the repo. Then the rest of the group members
-should be added as collaborators to that fork. This way the group
-can use git and github and synchronize code changes. First fork from
-[repo](https://github.com/TDT4237/moviereviews) then clone
+One group member should clone the repo (with --bare) and push to new repo. Then the rest of the group members
+should be added as collaborators to that repo. This way the group
+can use git and github and synchronize code changes. 
 
-    git clone git@github.com:<username>/moviereviews.git
+    # go to github.com and create a new repo called my-new-repo
+    git clone --bare git@github.com:TDT4237/moviereviews.git
+    cd moviereviews.git
+    git push --mirror git@github.com:<your username>/my-new-repo.git
+    # go to github.com and make the repo private
+    cd ../
+    rm -rf moviereviews.git/
+    git clone git@github.com:<your username>/my-new-repo.git
     cd moviereviews
 
 Windows users can use git from Git Bash, which is a terminal that
-is bundled with git. To authenticate yourself without password, 
-use [asymmetric crypto](https://help.github.com/articles/generating-ssh-keys).
+is bundled with git.
 
 ## PHP
 
