@@ -52,6 +52,7 @@ class UserController extends Controller
     function all()
     {
         $users = User::all();
+        shuffle($users);
         $this->render('users.twig', ['users' => $users]);
     }
 
