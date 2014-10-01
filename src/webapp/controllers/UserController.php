@@ -30,6 +30,13 @@ class UserController extends Controller
         $username = $request->post('user');
         $pass = $request->post('pass');
 
+        // Check if username already exists
+        if(User::findByUser($username)) {
+            $this->app->flashNow('error', "A user with that name already exists");
+            $this->render('newUserForm.twig', ['username' => $username]);
+            return;
+        }
+        
         // Check password strength before we hash it
         $passwordErrors = [];
         if (strlen($pass) < 6) {
