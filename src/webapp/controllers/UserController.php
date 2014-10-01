@@ -30,17 +30,33 @@ class UserController extends Controller
         $username = $request->post('user');
         $pass = $request->post('pass');
 
-        $hashed = Hash::make($pass);
+        // Check password strength before we hash it
+        $passwordErrors = [];
+        if (strlen($pass) < 6) {
+            array_push($passwordErrors, "Password must be atleast six characters");
+        }
 
+        if (!preg_match("#[0-9]+#", $pass)) {
+            array_push($passwordErrors, "Password must include atleast one number");
+        }
+
+        if (!preg_match("#[a-zA-Z]+#", $pass)) {
+            array_push($passwordErrors, "Password must include atleast one letter");
+        }
+
+        $hashed = Hash::make($pass);
         $user = User::makeEmpty();
         $user->setUsername($username);
         $user->setHash($hashed);
 
-        $validationErrors = User::validate($user);
+        $usernameValidationErrors = User::validate($user);
 
-        if (sizeof($validationErrors) > 0) {
-            $errors = join("<br>\n", $validationErrors);
-            $this->app->flashNow('error', $errors);
+        // Print errors if any
+        if (sizeof($usernameValidationErrors) > 0 || sizeof($passwordErrors) > 0) {
+            $allErrors = array_merge($usernameValidationErrors, $passwordErrors);
+            $errorsFormatted = join("<br>\n", $allErrors);
+
+            $this->app->flashNow('error', $errorsFormatted);
             $this->render('newUserForm.twig', ['username' => $username]);
         } else {
             $user->save();
@@ -82,7 +98,7 @@ class UserController extends Controller
 
         $user = Auth::user();
 
-        if (! $user) {
+        if (!$user) {
             throw new \Exception("Unable to fetch logged in user's object from db.");
         }
 
@@ -96,7 +112,7 @@ class UserController extends Controller
             $user->setBio($bio);
             $user->setAge($age);
 
-            if (! User::validateAge($user)) {
+            if (!User::validateAge($user)) {
                 $this->app->flashNow('error', 'Age must be between 0 and 150.');
             } else {
                 $user->save();
