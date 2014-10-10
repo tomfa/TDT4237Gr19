@@ -15,8 +15,8 @@ $view->parserExtensions = array(
 try {
     // Create (connect to) SQLite database in file
     $app->db = new PDO('sqlite:app.db');
-    // Set errormode to exceptions
-    $app->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Set errormode to silent
+    $app->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 } catch(PDOException $e) {
     echo $e->getMessage();
     exit();
@@ -32,12 +32,12 @@ $app->get('/login', $ns . 'LoginController:index');
 $app->post('/login', $ns . 'LoginController:login');
 
 // New user
-$app->get('/user/new', $ns . 'UserController:index')->name('newuser');
-$app->post('/user/new', $ns . 'UserController:create');
+$app->get('/createuser', $ns . 'UserController:index')->name('newuser');
+$app->post('/createuser', $ns . 'UserController:create');
 
 // Edit logged in user
-$app->get('/user/edit', $ns . 'UserController:edit')->name('editprofile');
-$app->post('/user/edit', $ns . 'UserController:edit');
+$app->get('/editprofile', $ns . 'UserController:edit')->name('editprofile');
+$app->post('/editprofile', $ns . 'UserController:edit');
 
 // Show a user by name
 $app->get('/user/:username', $ns . 'UserController:show')->name('showuser');
