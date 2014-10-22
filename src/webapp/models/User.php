@@ -11,6 +11,7 @@ class User
     const FIND_BY_NAME = "SELECT * FROM users WHERE user='%s'";
 
     const MIN_USER_LENGTH = 3;
+    const MAX_USER_LENGTH = 30;
 
     protected $id = null;
     protected $user;
@@ -153,6 +154,10 @@ class User
             array_push($validationErrors, "Username too short. Min length is " . self::MIN_USER_LENGTH);
         }
 
+        if (User::usernameIsTooLong($username)) {
+            array_push($validationErrors, 'Username too long. Max length is ' . self::MAX_USER_LENGTH);
+        }
+
         if (User::usernameContainsInvalidChars($username)) {
             array_push($validationErrors, 'Username can only contain letters and numbers');
         }
@@ -160,6 +165,9 @@ class User
         return $validationErrors;
     }
 
+    static function usernameIsTooLong($username) {
+        return (strlen($username) > self::MAX_USER_LENGTH);
+    }
 
     static function usernameIsTooShort($username) {
         return (strlen($username) < self::MIN_USER_LENGTH);
@@ -168,7 +176,6 @@ class User
     static function usernameContainsInvalidChars($username) {
         return (preg_match('/^[A-Za-z0-9_]+$/', $username) === 0);
     }
-
 
     static function validateAge(User $user)
     {
@@ -189,7 +196,7 @@ class User
      */
     static function findByUser($username)
     {
-        if (User::usernameIsTooShort($username) || User::usernameContainsInvalidChars($username)) {
+        if (User::usernameIsTooShort($username) || User::usernameIsTooLong($username) || User::usernameContainsInvalidChars($username)) {
             return null;
         }
         $query = sprintf(self::FIND_BY_NAME, $username);
