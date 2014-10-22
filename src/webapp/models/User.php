@@ -138,7 +138,7 @@ class User
     }
 
     /**
-     * The caller of this function can check the length of the returned 
+     * The caller of this function can check the length of the returned
      * array. If array length is 0, then all checks passed.
      *
      * @param User $user
@@ -147,17 +147,28 @@ class User
     static function validate(User $user)
     {
         $validationErrors = [];
+        $username = $user->user;
 
-        if (strlen($user->user) < self::MIN_USER_LENGTH) {
+        if (User::usernameIsTooShort($username)) {
             array_push($validationErrors, "Username too short. Min length is " . self::MIN_USER_LENGTH);
         }
 
-        if (preg_match('/^[A-Za-z0-9_]+$/', $user->user) === 0) {
+        if (User::usernameContainsInvalidChars($username)) {
             array_push($validationErrors, 'Username can only contain letters and numbers');
         }
 
         return $validationErrors;
     }
+
+
+    static function usernameIsTooShort($username) {
+        return (strlen($username) < self::MIN_USER_LENGTH);
+    }
+
+    static function usernameContainsInvalidChars($username) {
+        return (preg_match('/^[A-Za-z0-9_]+$/', $username) === 0);
+    }
+
 
     static function validateAge(User $user)
     {
@@ -178,6 +189,9 @@ class User
      */
     static function findByUser($username)
     {
+        if (User::usernameIsTooShort($username) || User::usernameContainsInvalidChars($username)) {
+            return null;
+        }
         $query = sprintf(self::FIND_BY_NAME, $username);
         $result = self::$app->db->query($query, \PDO::FETCH_ASSOC);
         $row = $result->fetch();
