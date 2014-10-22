@@ -31,17 +31,11 @@ class Sql
     }
 
     static function insertDummyUsers() {
-        $hash1 = Hash::make(bin2hex(openssl_random_pseudo_bytes(2)));
-        $hash2 = Hash::make('bobdylan');
-        $hash3 = Hash::make('liverpool');
+        $hash1 = Hash::make(bin2hex(openssl_random_pseudo_bytes(8)));
 
         $q1 = "INSERT INTO users(user, pass, isadmin) VALUES ('admin', '$hash1', 1)";
-        $q2 = "INSERT INTO users(user, pass) VALUES ('bob', '$hash2')";
-        $q3 = "INSERT INTO users(user, pass) VALUES ('mike', '$hash3')";
 
         self::$pdo->exec($q1);
-        self::$pdo->exec($q2);
-        self::$pdo->exec($q3);
 
         print "[tdt4237] Done inserting dummy users.".PHP_EOL;
     }
