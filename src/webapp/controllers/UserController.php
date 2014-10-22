@@ -36,19 +36,23 @@ class UserController extends Controller
             $this->render('newUserForm.twig', ['username' => $username]);
             return;
         }
-        
+
         // Check password strength before we hash it
         $passwordErrors = [];
-        if (strlen($pass) < 6) {
-            array_push($passwordErrors, "Password must be atleast six characters");
+        if (strlen($pass) < 10) {
+            array_push($passwordErrors, "Password must be atleast ten characters");
         }
 
         if (!preg_match("#[0-9]+#", $pass)) {
             array_push($passwordErrors, "Password must include atleast one number");
         }
 
-        if (!preg_match("#[a-zA-Z]+#", $pass)) {
-            array_push($passwordErrors, "Password must include atleast one letter");
+        if (!preg_match("#[a-z]+#", $pass)) {
+            array_push($passwordErrors, "Password must include atleast one lowercase letter");
+        }
+
+        if (!preg_match("#[A-Z]+#", $pass)) {
+            array_push($passwordErrors, "Password must include atleast one uppercase letter");
         }
 
         $hashed = Hash::make($pass);
