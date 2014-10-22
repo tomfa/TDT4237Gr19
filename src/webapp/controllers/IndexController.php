@@ -18,9 +18,10 @@ class IndexController extends Controller
 
         $variables = [];
 
-        if ($msg) {
-            $variables['flash']['info'] = $msg;
+        if ($msg === 'loggedout') {
+            $this->app->flashNow('info', 'Successfully logged out');
         }
+
 
         $this->render('index.twig', $variables);
     }

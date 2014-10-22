@@ -22,7 +22,7 @@ try {
     exit();
 }
 
-$ns ='tdt4237\\webapp\\controllers\\'; 
+$ns ='tdt4237\\webapp\\controllers\\';
 
 // Home page at http://localhost/
 $app->get('/', $ns . 'IndexController:index');
