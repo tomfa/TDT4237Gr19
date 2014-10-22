@@ -58,14 +58,18 @@ class MovieReview
         return $review;
     }
 
+    function cleanDBInput($string) {
+        return addslashes($string);
+    }
+
     /**
      * Insert or save review into db.
      */
     function save()
     {
-        $movieId = $this->movieId;
-        $author = $this->author;
-        $text = $this->text;
+        $movieId = self::cleanDBInput($this->movieId);
+        $author = self::cleanDBInput($this->author);
+        $text = self::cleanDBInput($this->text);
 
         if ($this->id === null) {
             $query = "INSERT INTO moviereviews (movieid, author, text) "
