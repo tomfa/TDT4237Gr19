@@ -32,7 +32,7 @@ class IPValidator
     		$attempts++;
     	}
 
-    	if($attempts > 5){
+    	if($attempts > 1000){
     		return true;
     	}
 
