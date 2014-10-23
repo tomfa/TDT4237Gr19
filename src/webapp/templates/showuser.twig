@@ -14,12 +14,14 @@
             <th>Email</th>
             <th>Bio</th>
             <th>Age</th>
+            <th>Image</th>
         </tr>
             <tr>
             <td>{{ user.username }}</td>
             <td>{{ user.email }}</td>
             <td>{{ user.bio }}</td>
             <td>{{ user.age }}</td>
+            <td><img style="height: 150px" src="{{ user.imageurl }}"></td>
         </tr>
     </table>
 {% else %}
