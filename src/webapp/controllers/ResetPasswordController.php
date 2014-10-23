@@ -40,7 +40,7 @@ class ResetPasswordController extends Controller
         // IF token cool, reset, and remove requests
         if( User::validateUserRequestedNewPassword($user, $token) ) {
 
-            if (User::usernameIsTooShort($user) || User::usernameIsTooLong($user) || User::usernameContainsInvalidChars($user)) {
+            if ( (strlen($password) < 10) || (!preg_match("#[0-9]+#", $password)) || (!preg_match("#[a-z]+#", $password)) ||  (!preg_match("#[A-Z]+#", $password))) {
                 $this->app->flash('info', "Password does not fullfill requirements");
                 $this->app->redirect('/password/reset');
             }
