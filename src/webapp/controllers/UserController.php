@@ -27,6 +27,7 @@ class UserController extends Controller
     function create()
     {
         $request = $this->app->request;
+
         $username = $request->post('user');
         $pass = $request->post('pass');
 
@@ -99,6 +100,14 @@ class UserController extends Controller
         ]);
     }
 
+    function validFilename($filename) {
+        $mimetype = pathinfo($filename, PATHINFO_EXTENSION);
+        if(in_array($mimetype, array('jpeg', 'gif', 'png', 'jpg'))) {
+           return True;
+        }
+        return False;
+    }
+
     function edit()
     {
         if (Auth::guest()) {
@@ -114,6 +123,23 @@ class UserController extends Controller
         }
 
         if ($this->app->request->isPost()) {
+            $target_dir = "web/images/";
+            $target_dir = $target_dir . basename( $_FILES["uploadFile"]["name"]);
+            $imageurl = "images/" . basename( $_FILES["uploadFile"]["name"]);
+            $attemptsUpload = (basename( $_FILES["uploadFile"]["name"]) !== "");
+            $uploadfail = False;
+
+            if ($attemptsUpload) {
+                $uploadfail = True;
+
+                if (UserController::validFilename($_FILES["uploadFile"]["name"])){
+                    if (move_uploaded_file($_FILES["uploadFile"]["tmp_name"], $target_dir)) {
+                        $this->app->flashNow('info', "The file ". basename( $_FILES["uploadFile"]["name"]). " has been uploaded.");
+                        $uploadfail = False;
+                    }
+                }
+            }
+
             $request = $this->app->request;
             $email = $request->post('email');
             $bio = $request->post('bio');
@@ -123,10 +149,16 @@ class UserController extends Controller
             $user->setEmail($email);
             $user->setBio($bio);
             $user->setAge($age);
+
             $user->setImageurl($image);
+
+            if ($attemptsUpload)
+                $user->setImageurl($imageurl);
 
             if (!User::validateAge($user)) {
                 $this->app->flashNow('error', 'Age must be between 0 and 150.');
+            } else if ($uploadfail == True) {
+                $this->app->flashNow('error', "Your file should be of type gif/png/jpg and below 2MB");
             } else {
                 $user->save();
                 $this->app->flashNow('info', 'Your profile was successfully saved.');

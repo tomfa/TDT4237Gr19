@@ -59,7 +59,7 @@ try {
     // Create (connect to) SQLite database in file
 	Sql::$pdo = new \PDO('sqlite:app.db');
     // Set errormode to exceptions
-	Sql::$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+	Sql::$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
 } catch(\PDOException $e) {
 	echo $e->getMessage();
 	exit();

@@ -37,6 +37,7 @@ class LoginController extends Controller
             $this->app->redirect('/');
         }
         else if (Auth::checkCredentials($user, $pass)) {
+            session_regenerate_id (true);
             $_SESSION['user'] = $user;
 
             $isAdmin = Auth::user()->isAdmin();
@@ -49,7 +50,7 @@ class LoginController extends Controller
 
             $this->app->flash('info', "You are now successfully logged in as $user.");
             $this->app->redirect('/');
-        } 
+        }
         else {
             IPValidator::registerAttempt($_SERVER['REMOTE_ADDR']);
             $this->app->flashNow('error', 'Incorrect user/pass combination.');
