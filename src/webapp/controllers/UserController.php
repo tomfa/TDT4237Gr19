@@ -100,7 +100,7 @@ class UserController extends Controller
         ]);
     }
 
-    function validFileType($filename) {
+    function validFilename($filename) {
         $mimetype = pathinfo($filename, PATHINFO_EXTENSION);
         if(in_array($mimetype, array('jpeg', 'gif', 'png', 'jpg'))) {
            return True;
@@ -126,12 +126,17 @@ class UserController extends Controller
             $target_dir = "web/images/";
             $target_dir = $target_dir . basename( $_FILES["uploadFile"]["name"]);
             $imageurl = "images/" . basename( $_FILES["uploadFile"]["name"]);
-            $uploadfail = True;
+            $attemptsUpload = (basename( $_FILES["uploadFile"]["name"]) !== "");
+            $uploadfail = False;
 
-            if (UserController::validFileType($_FILES["uploadFile"]["name"])){
-                if (move_uploaded_file($_FILES["uploadFile"]["tmp_name"], $target_dir)) {
-                    $this->app->flashNow('info', "The file ". basename( $_FILES["uploadFile"]["name"]). " has been uploaded.");
-                    $uploadfail = False;
+            if ($attemptsUpload) {
+                $uploadfail = True;
+
+                if (UserController::validFilename($_FILES["uploadFile"]["name"])){
+                    if (move_uploaded_file($_FILES["uploadFile"]["tmp_name"], $target_dir)) {
+                        $this->app->flashNow('info', "The file ". basename( $_FILES["uploadFile"]["name"]). " has been uploaded.");
+                        $uploadfail = False;
+                    }
                 }
             }
 
@@ -144,7 +149,8 @@ class UserController extends Controller
             $user->setEmail($email);
             $user->setBio($bio);
             $user->setAge($age);
-            $user->setImageurl($imageurl);
+            if ($attemptsUpload)
+                $user->setImageurl($imageurl);
 
             if (!User::validateAge($user)) {
                 $this->app->flashNow('error', 'Age must be between 0 and 150.');
