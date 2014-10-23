@@ -30,7 +30,7 @@ class AdminController extends Controller
         $this->render('admin.twig', $variables);
     }
 
-    function delete($username)
+    function delete()
     {
         if (Auth::guest()) {
             $this->app->flash('info', "You must be logged in to view the admin page.");
@@ -42,6 +42,8 @@ class AdminController extends Controller
             $this->app->redirect('/');
         }
 
+        $request = $this->app->request;
+        $username = $request->post('username');
 
         if (User::deleteByUsername($username) === 1) {
             $this->app->flash('info', "Successfully deleted '$username'");
