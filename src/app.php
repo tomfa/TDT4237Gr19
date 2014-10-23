@@ -48,7 +48,7 @@ $app->get('/user/:username', $ns . 'UserController:show')->name('showuser');
 $app->get('/users', $ns . 'UserController:all');
 
 // Log out
-$app->get('/logout', $ns . 'UserController:logout')->name('logout');
+$app->post('/logout', $ns . 'UserController:logout')->name('logout');
 
 // Admin restricted area
 $app->get('/admin', $ns . 'AdminController:index')->name('admin');
