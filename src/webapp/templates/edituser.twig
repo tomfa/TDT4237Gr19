@@ -16,6 +16,9 @@
         <label>Age:</label>
         <input type="text" name="age" value="{{ user.age }}"> <br />
 
+        <label>Image:</label>
+        <input type="text" name="imageurl" value="{{ user.imageurl }}"><br />
+
         <input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
         <input type="submit" name="submit" value="Save profile">
     </form>

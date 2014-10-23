@@ -118,10 +118,12 @@ class UserController extends Controller
             $email = $request->post('email');
             $bio = $request->post('bio');
             $age = $request->post('age');
+            $image = $request->post('imageurl');
 
             $user->setEmail($email);
             $user->setBio($bio);
             $user->setAge($age);
+            $user->setImage($image);
 
             if (!User::validateAge($user)) {
                 $this->app->flashNow('error', 'Age must be between 0 and 150.');

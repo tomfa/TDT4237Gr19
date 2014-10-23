@@ -6,8 +6,8 @@ use tdt4237\webapp\Hash;
 
 class User
 {
-    const INSERT_QUERY = "INSERT INTO users(user, pass, email, age, bio, isadmin) VALUES('%s', '%s', '%s' , '%s' , '%s', '%s')";
-    const UPDATE_QUERY = "UPDATE users SET email='%s', age='%s', bio='%s', isadmin='%s' WHERE id='%s'";
+    const INSERT_QUERY = "INSERT INTO users(user, pass, email, age, bio, imageurl, isadmin) VALUES('%s', '%s', '%s' , '%s' , '%s', '%s', '%s')";
+    const UPDATE_QUERY = "UPDATE users SET email='%s', age='%s', bio='%s', imageurl='%s', isadmin='%s' WHERE id='%s'";
     const FIND_BY_NAME = "SELECT * FROM users WHERE user='%s'";
 
     const MIN_USER_LENGTH = 3;
@@ -19,6 +19,7 @@ class User
     protected $email;
     protected $bio = 'Bio is empty.';
     protected $age;
+    protected $imageurl;
     protected $isAdmin = 0;
 
     static $app;
@@ -27,7 +28,7 @@ class User
     {
     }
 
-    static function make($id, $username, $hash, $email, $bio, $age, $isAdmin)
+    static function make($id, $username, $hash, $email, $bio, $age, $imageurl, $isAdmin)
     {
         $user = new User();
         $user->id = $id;
@@ -36,6 +37,7 @@ class User
         $user->email = $email;
         $user->bio = $bio;
         $user->age = $age;
+        $user->imageurl = $imageurl;
         $user->isAdmin = $isAdmin;
 
         return $user;
@@ -58,6 +60,7 @@ class User
                 $this->email,
                 $this->age,
                 $this->bio,
+                $this->imageurl,
                 $this->isAdmin
             );
         } else {
@@ -65,6 +68,7 @@ class User
                 $this->email,
                 $this->age,
                 $this->bio,
+                $this->imageurl,
                 $this->isAdmin,
                 $this->id
             );
@@ -103,6 +107,11 @@ class User
         return $this->age;
     }
 
+    function getImageurl()
+    {
+        return $this->imageurl;
+    }
+
     function isAdmin()
     {
         return $this->isAdmin === "1";
@@ -136,6 +145,11 @@ class User
     function setAge($age)
     {
         $this->age = $age;
+    }
+
+    function setImageurl($imageurl)
+    {
+        $this->imageurl = $imageurl;
     }
 
     /**
@@ -240,6 +254,7 @@ class User
             $row['email'],
             $row['bio'],
             $row['age'],
+            $row['imageurl'],
             $row['isadmin']
         );
     }
