@@ -14,7 +14,13 @@
         <tr>
             <td>{{ user.id }}</td>
             <td><a href="/user/{{ user.username }}">{{ user.username }}</a></td>
-            <td><a href="/admin/delete/{{ user.username }}">Delete this user</a></td>
+            <td>
+                <form action="{{ urlFor('deleteuser') }}" method="POST">
+                    <input type="hidden" name="{{ csrf_key }}" value="{{ csrf_token }}">
+                    <input type="hidden" name="username" value="{{ user.username }}">
+                    <a href="" onclick="parentNode.submit();return false;">Delete this user</a>
+                </form>
+            </td>
         </tr>
     {% endfor %}
     </table>
