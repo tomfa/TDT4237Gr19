@@ -20,11 +20,13 @@ class Sql
         $q4 = "CREATE TABLE movies (id INTEGER PRIMARY KEY, name VARVHAR(50), imageurl VARCHAR(100) );";
         $q5 = "CREATE TABLE moviereviews (id INTEGER PRIMARY KEY, movieid INTEGER, author VARVHAR(50), text VARCHAR(500) );";
         $q6 = "CREATE TABLE login_attempts (id INTEGER PRIMARY KEY, ip varchar(16),time_attempted varchar(10));";
+        $q7 = "CREATE TABLE password_requested (id INTEGER PRIMARY KEY, user VARCHAR(50), token VARCHAR(200));";
 
         self::$pdo->exec($q1);
         self::$pdo->exec($q4);
         self::$pdo->exec($q5);
         self::$pdo->exec($q6);
+        self::$pdo->exec($q7);
 
         print "[tdt4237] Done creating all SQL tables.".PHP_EOL;
 
@@ -38,6 +40,7 @@ class Sql
         $q1 = "INSERT INTO users(user, pass, age, isadmin, imageurl) VALUES ('admin', '$hash1', 14, 1, 'http://1.bp.blogspot.com/--8s8qqk-vSs/UACCw2mv84I/AAAAAAAAAJw/s_3rV7-JEvs/s1600/who-s-the-boss.jpg')";
 
         self::$pdo->exec($q1);
+
 
         print "[tdt4237] Done inserting dummy users.".PHP_EOL;
     }

@@ -4,6 +4,8 @@ namespace tdt4237\webapp\controllers;
 
 use tdt4237\webapp\Auth;
 use tdt4237\webapp\IPValidator;
+use tdt4237\webapp\models\User;
+use tdt4237\webapp\Hash;
 
 class LoginController extends Controller
 {
@@ -52,6 +54,38 @@ class LoginController extends Controller
             IPValidator::registerAttempt($_SERVER['REMOTE_ADDR']);
             $this->app->flashNow('error', 'Incorrect user/pass combination.');
             $this->render('login.twig', []);
+        }
+    }
+
+    function forgot()
+    {
+        $this->app->log->debug("It works!");
+        $this->render('forgotPasswordForm.twig', []);
+    }
+
+    function sendPassword(){
+        $request = $this->app->request;
+        $email = $request->post('email');
+
+        $user = User::getUserByEmail($email);
+
+        if( $user ){
+            $u = addslashes($user->getUserName());
+            $token = bin2hex(openssl_random_pseudo_bytes(8));
+            $tokenHash = Hash::make($token);
+
+            User::registerForgotPasswordRequest($u, $tokenHash);
+
+            $link = $_SERVER['HTTP_HOST'] . '/password/reset?u=' . $u . '&t=' . $token;
+
+            $this->app->log->debug("Email sent to " . $email . " with the following content:");
+            $this->app->log->debug("Follow this link to reset password: " . $link);
+            $this->app->flash('info', "Email sent");
+            $this->app->redirect('/user/forgot');
+        }
+        else {
+            $this->app->flash('info', "Email not registered");
+            $this->app->redirect('/user/forgot');   
         }
     }
 }

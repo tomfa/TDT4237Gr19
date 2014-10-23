@@ -33,6 +33,14 @@ $app->get('/', $ns . 'IndexController:index');
 $app->get('/login', $ns . 'LoginController:index');
 $app->post('/login', $ns . 'LoginController:login');
 
+// Forgot password
+$app->get('/user/forgot', $ns . 'LoginController:forgot');
+$app->post('/user/forgot', $ns . 'LoginController:sendPassword');
+
+// Reset password
+$app->get('/password/reset', $ns . 'ResetPasswordController:reset');
+$app->post('/password/reset', $ns . 'ResetPasswordController:updatePassword');
+
 // New user
 $app->get('/createuser', $ns . 'UserController:index')->name('newuser');
 $app->post('/createuser', $ns . 'UserController:create');

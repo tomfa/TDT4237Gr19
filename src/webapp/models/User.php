@@ -62,7 +62,7 @@ class User
                 $this->bio,
                 $this->imageurl,
                 $this->isAdmin
-            );
+                );
         } else {
             $query = sprintf(self::UPDATE_QUERY,
                 $this->email,
@@ -71,7 +71,7 @@ class User
                 $this->imageurl,
                 $this->isAdmin,
                 $this->id
-            );
+                );
         }
 
         return self::$app->db->exec($query);
@@ -256,7 +256,63 @@ class User
             $row['age'],
             $row['imageurl'],
             $row['isadmin']
-        );
+            );
+    }
+
+    static function getUserByEmail($email)
+    {
+        $email = addslashes($email);
+
+        $query = "SELECT * FROM users WHERE email='$email'";
+        $results = self::$app->db->query($query);
+        $row = $results->fetch();
+
+        if($row == false) {
+            return null;
+        }
+
+        return User::makeFromSql($row);   
+    }
+
+    static function registerForgotPasswordRequest($user, $tokenHash)
+    {
+        $query = "INSERT INTO password_requested(user, token) VALUES('$user', '$tokenHash')";
+        self::$app->db->exec($query);
+    }
+
+    static function validateUserRequestedNewPassword($user, $token) 
+    {
+        $query = "SELECT token FROM password_requested WHERE user='$user'";
+        $result = self::$app->db->query($query);
+
+        $t = '';
+
+        // So sorry
+        foreach ($result as $row) {
+            $t = $row['token'];
+        }
+        // Sory
+
+        if (Hash::check($token, $t)){
+            return true;
+        }
+
+        return false;
+        
+    }
+
+    static function removeAllForgotPasswordRequests($user){
+    // Remove from table wher username = user
+     $query = "DELETE FROM password_requested WHERE user='$user'";
+     self::$app->db->exec($query);
+    }
+
+    static function updatePassword($user, $passwordHash)
+    {   
+        // CHECK if password is ok
+        // Hash password
+        $query = "UPDATE password_requested SET pass='$passwordHash' WHERE user='$user'";
+        self::$app->db->exec($query);
     }
 }
 User::$app = \Slim\Slim::getInstance();
