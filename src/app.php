@@ -7,6 +7,8 @@ $app = new \Slim\Slim([
     'view' => new \Slim\Views\Twig()
 ]);
 
+$app->add(new \Slim\Extras\Middleware\CsrfGuard());
+
 $view = $app->view();
 $view->parserExtensions = array(
     new \Slim\Views\TwigExtension(),
