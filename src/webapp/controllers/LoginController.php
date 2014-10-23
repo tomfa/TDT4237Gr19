@@ -3,6 +3,7 @@
 namespace tdt4237\webapp\controllers;
 
 use tdt4237\webapp\Auth;
+use tdt4237\webapp\IPValidator;
 
 class LoginController extends Controller
 {
@@ -28,7 +29,12 @@ class LoginController extends Controller
         $user = $request->post('user');
         $pass = $request->post('pass');
 
-        if (Auth::checkCredentials($user, $pass)) {
+        if(IPValidator::exceededLoginAttempts($_SERVER['REMOTE_ADDR'])){
+            IPValidator::registerAttempt($_SERVER['REMOTE_ADDR']);
+            $this->app->flash('info', "Login attempts exeeded. Try again later");
+            $this->app->redirect('/');
+        }
+        else if (Auth::checkCredentials($user, $pass)) {
             $_SESSION['user'] = $user;
 
             $isAdmin = Auth::user()->isAdmin();
@@ -41,7 +47,9 @@ class LoginController extends Controller
 
             $this->app->flash('info', "You are now successfully logged in as $user.");
             $this->app->redirect('/');
-        } else {
+        } 
+        else {
+            IPValidator::registerAttempt($_SERVER['REMOTE_ADDR']);
             $this->app->flashNow('error', 'Incorrect user/pass combination.');
             $this->render('login.twig', []);
         }
