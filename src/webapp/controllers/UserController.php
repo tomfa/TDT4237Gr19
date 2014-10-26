@@ -125,7 +125,7 @@ class UserController extends Controller
         if ($this->app->request->isPost()) {
             $target_dir = "web/images/";
             $target_dir = $target_dir . basename( $_FILES["uploadFile"]["name"]);
-            $imageurl = "images/" . basename( $_FILES["uploadFile"]["name"]);
+            $imageurl = "/images/" . basename( $_FILES["uploadFile"]["name"]);
             $attemptsUpload = (basename( $_FILES["uploadFile"]["name"]) !== "");
             $uploadfail = False;
 
